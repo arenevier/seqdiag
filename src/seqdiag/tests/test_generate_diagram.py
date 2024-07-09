@@ -15,7 +15,7 @@
 
 import os
 
-from nose.tools import nottest
+import pytest
 
 import seqdiag.command
 from seqdiag.tests.utils import TemporaryDirectory, capture_stderr
@@ -31,15 +31,6 @@ def get_fontpath(testdir):
     return os.path.join(testdir, 'VLGothic', 'VL-Gothic-Regular.ttf')
 
 
-@nottest
-def testcase_generator(basepath, mainfunc, files, options):
-    fontpath = get_fontpath(basepath)
-    options = options + ['-f', fontpath]
-
-    for source in files:
-        yield generate, mainfunc, 'svg', source, options
-
-
 @capture_stderr
 def generate(mainfunc, filetype, source, options):
     try:
@@ -53,11 +44,15 @@ def generate(mainfunc, filetype, source, options):
         tmpdir.clean()
 
 
-def test_generate():
-    mainfunc = seqdiag.command.main
-    basepath = os.path.dirname(__file__)
-    files = get_diagram_files(basepath)
-    options = []
+base_path = os.path.dirname(__file__)
+generate_test_files = get_diagram_files(base_path)
 
-    for testcase in testcase_generator(basepath, mainfunc, files, options):
-        yield testcase
+
+@pytest.mark.parametrize("source", generate_test_files)
+def test_generate(source):
+    basepath = os.path.dirname(__file__)
+
+    fontpath = get_fontpath(basepath)
+    options = ['-f', fontpath]
+    mainfunc = seqdiag.command.main
+    generate(mainfunc, "svg", source, options)
