@@ -15,10 +15,42 @@
 
 import os
 
-from blockdiag.tests.test_generate_diagram import (get_diagram_files,
-                                                   testcase_generator)
+from nose.tools import nottest
 
 import seqdiag.command
+from seqdiag.tests.utils import TemporaryDirectory, capture_stderr
+
+
+def get_diagram_files(testdir):
+    diagramsdir = os.path.join(testdir, 'diagrams')
+    for file in os.listdir(diagramsdir):
+        yield os.path.join(diagramsdir, file)
+
+
+def get_fontpath(testdir):
+    return os.path.join(testdir, 'VLGothic', 'VL-Gothic-Regular.ttf')
+
+
+@nottest
+def testcase_generator(basepath, mainfunc, files, options):
+    fontpath = get_fontpath(basepath)
+    options = options + ['-f', fontpath]
+
+    for source in files:
+        yield generate, mainfunc, 'svg', source, options
+
+
+@capture_stderr
+def generate(mainfunc, filetype, source, options):
+    try:
+        tmpdir = TemporaryDirectory()
+        fd, tmpfile = tmpdir.mkstemp()
+        os.close(fd)
+
+        mainfunc(['--debug', '-T', filetype, '-o', tmpfile, source] +
+                 list(options))
+    finally:
+        tmpdir.clean()
 
 
 def test_generate():

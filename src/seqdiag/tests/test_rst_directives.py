@@ -17,12 +17,28 @@ import os
 import sys
 import unittest
 
-from blockdiag.tests.utils import TemporaryDirectory, capture_stderr, with_pil
 from docutils import nodes
 from docutils.core import publish_doctree
 from docutils.parsers.rst import directives as docutils
 
+from seqdiag.tests.utils import TemporaryDirectory, capture_stderr
 from seqdiag.utils.rst import directives
+
+
+def supported_pil():
+    try:
+        from PIL import _imagingft
+        _imagingft
+        return True
+    except Exception:
+        return False
+
+
+def with_pil(fn):
+    if not supported_pil():
+        fn.__test__ = False
+
+    return fn
 
 
 class TestRstDirectives(unittest.TestCase):
