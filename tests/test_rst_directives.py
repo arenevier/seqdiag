@@ -21,7 +21,7 @@ from docutils import nodes
 from docutils.core import publish_doctree
 from docutils.parsers.rst import directives as docutils
 
-from seqdiag.tests.utils import TemporaryDirectory, capture_stderr
+from utils import TemporaryDirectory, capture_stderr
 from seqdiag.utils.rst import directives
 
 

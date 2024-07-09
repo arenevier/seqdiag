@@ -4,9 +4,10 @@ include README.rst
 include LICENSE
 include seqdiag.1
 include tox.ini
-include src/seqdiag/tests/VLGothic/*
+include tests/VLGothic/*
 recursive-include examples seqdiagrc *.diag *.png *.svg
 recursive-include src *.py *.diag *.gif
+recursive-include tests *.py *.diag *.gif
 
 exclude .drone.io.sh
 exclude examples/update.sh

@@ -18,7 +18,7 @@ import os
 import pytest
 
 import seqdiag.command
-from seqdiag.tests.utils import TemporaryDirectory, capture_stderr
+from utils import TemporaryDirectory, capture_stderr
 
 
 def get_diagram_files(testdir):
